@@ -7,6 +7,18 @@ public class DbContexto : DbContext
 {
   private readonly IConfiguration _ConfiguracaoAppSettings;
 
+  protected override void OnModelCreating(ModelBuilder modelBuilder)
+  {
+    modelBuilder.Entity<Administrador>().HasData(
+      new Administrador
+      {
+        Id = 1,
+        Email = "administrador@teste.com",
+        Senha = "123456",
+        Perfil = "Adm"
+      }
+    );
+  }
   public DbContexto(IConfiguration ConfiguracaoAppSettings)
   {
     _ConfiguracaoAppSettings = ConfiguracaoAppSettings;
