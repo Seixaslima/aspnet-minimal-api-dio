@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aspnet-minimal-api-dio", "Api\aspnet-minimal-api-dio.csproj", "{F68F2B61-998F-45B2-8A2E-741821CEBCC1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{5CE2E442-D7B7-45BF-9F09-ECDC723F610E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F68F2B61-998F-45B2-8A2E-741821CEBCC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F68F2B61-998F-45B2-8A2E-741821CEBCC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F68F2B61-998F-45B2-8A2E-741821CEBCC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F68F2B61-998F-45B2-8A2E-741821CEBCC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5CE2E442-D7B7-45BF-9F09-ECDC723F610E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5CE2E442-D7B7-45BF-9F09-ECDC723F610E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CE2E442-D7B7-45BF-9F09-ECDC723F610E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CE2E442-D7B7-45BF-9F09-ECDC723F610E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
