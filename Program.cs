@@ -34,6 +34,42 @@ app.MapGet("/", () => Results.Json(new Home())).WithTags("Home");
 #endregion
 
 #region Administradores
+ErrosDeValidacao ValidaAdministradorDTO(AdministradorDTO administradorDTO)
+{
+  var validacao = new ErrosDeValidacao
+  {
+    Mensagens = new List<string>()
+  };
+
+  if (string.IsNullOrEmpty(administradorDTO.Email))
+    validacao.Mensagens.Add("O Email não pode ficar em branco");
+
+  if (string.IsNullOrEmpty(administradorDTO.Senha))
+    validacao.Mensagens.Add("A Senha não pode ficar em branco");
+
+  if (string.IsNullOrEmpty(administradorDTO.Perfil))
+    validacao.Mensagens.Add("O Perfil não pode ficar em branco");
+  else
+  {
+    if (!(administradorDTO.Perfil == "Adm" || administradorDTO.Perfil == "Editor"))
+      validacao.Mensagens.Add("O Perfil tem que ser Adm ou Editor");
+  }
+
+  return validacao;
+}
+
+AdministradorModelView NormalizaAdmParaApresentacao(Administrador administrador)
+{
+  var adm = new AdministradorModelView
+  {
+    Id = administrador.Id,
+    Email = administrador.Email,
+    Perfil = administrador.Perfil
+  };
+
+  return adm;
+}
+
 app.MapPost("/administradores/login", ([FromBody] LoginDTO loginDTO, IAdministradorServico administradorServico) =>
 {
   if (administradorServico.Login(loginDTO) != null)
@@ -41,6 +77,81 @@ app.MapPost("/administradores/login", ([FromBody] LoginDTO loginDTO, IAdministra
   else
     return Results.Unauthorized();
 }).WithTags("Administradores");
+
+app.MapPost("/administradores", ([FromBody] AdministradorDTO administradorDTO, IAdministradorServico administradorServico) =>
+{
+
+  var validacao = ValidaAdministradorDTO(administradorDTO);
+
+  if (validacao.Mensagens.Count > 0)
+    return Results.BadRequest(validacao);
+
+  var administrador = new Administrador
+  {
+    Email = administradorDTO.Email,
+    Senha = administradorDTO.Senha,
+    Perfil = administradorDTO.Perfil
+  };
+  administradorServico.Incluir(administrador);
+
+  return Results.Created($"/administradores/{administrador.Id}", NormalizaAdmParaApresentacao(administrador));
+}).WithTags("Administradores");
+
+app.MapGet("/administradores", ([FromQuery] int? pagina, IAdministradorServico administradorServico) =>
+{
+
+  int paginaTratada = (int)(pagina == null ? 1 : pagina);
+  var administradores = administradorServico.Todos(paginaTratada);
+  var adms = new List<AdministradorModelView>();
+  foreach (var adm in administradores)
+  {
+    adms.Add(NormalizaAdmParaApresentacao(adm));
+  }
+
+  return Results.Ok(adms);
+}).WithTags("Administradores");
+
+app.MapGet("/administradores/{id}", ([FromRoute] int Id, IAdministradorServico administradorServico) =>
+{
+  var administrador = administradorServico.BuscaPorId(Id);
+
+  if (administrador == null) return Results.NotFound();
+
+
+  return Results.Ok(NormalizaAdmParaApresentacao(administrador));
+}).WithTags("Administradores");
+
+app.MapPut("/administradores/{id}", ([FromRoute] int Id, [FromBody] AdministradorDTO administradorDTO, IAdministradorServico administradorServico) =>
+{
+  var administrador = administradorServico.BuscaPorId(Id);
+
+  if (administrador == null) return Results.NotFound();
+
+  var validacao = ValidaAdministradorDTO(administradorDTO);
+
+  if (validacao.Mensagens.Count > 0)
+    return Results.BadRequest(validacao);
+
+  administrador.Email = administradorDTO.Email;
+  administrador.Senha = administradorDTO.Senha;
+  administrador.Perfil = administradorDTO.Perfil;
+
+  administradorServico.Atualizar(administrador);
+
+  return Results.Ok(NormalizaAdmParaApresentacao(administrador));
+}).WithTags("Administradores");
+
+app.MapDelete("/administradores/{id}", ([FromRoute] int Id, IAdministradorServico administradorServico) =>
+{
+  var administrador = administradorServico.BuscaPorId(Id);
+
+  if (administrador == null) return Results.NotFound();
+
+  administradorServico.Apagar(administrador);
+
+  return Results.NoContent();
+}).WithTags("Administradores");
+
 #endregion
 
 #region  Veiculos
